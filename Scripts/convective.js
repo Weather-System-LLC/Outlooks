@@ -1,4 +1,4 @@
-const map = L.map('map').setView([39.8283,-98.5795], 4); // San Francisco
+const map = L.map('map').setView([39.6283,-97.5795], 5); // San Francisco
 const OutlookText = document.getElementById("OutlookText")
 const DateText = document.getElementById("DateText")
 const Day1 = new Date()
