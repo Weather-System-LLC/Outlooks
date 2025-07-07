@@ -18,8 +18,26 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
 map.zoomControl.remove()
 const params = new URLSearchParams(window.location.search);
 const Day = params.get("day")
-console.log(Day)
 const OutlookMode = params.get("outlook")
+const Zone = params.get("zone")
+
+async function GetZone() {
+  const response = await fetch(`https://api.weather.gov/zones/county/${Zone}`)
+  if(response.ok){
+    const data = await response.json()
+    const RawPolygon = data["geometry"]["coordinates"] 
+    let CleanedPolygon = [];
+    for(let index = 0; index<RawPolygon[0].length; index++){
+      CleanedPolygon.push([RawPolygon[0][index][1], RawPolygon[0][index][0]])
+    }
+    const Polygon = L.polygon(CleanedPolygon, {
+      color: 'black',      // border color
+      fillColor: 'none', // fill color
+      fillOpacity: 0     // fill transparency
+    }).addTo(map)
+    map.fitBounds(Polygon.getBounds())
+  }
+}
 
 let currentOutlookDisplay = null;
 let OutlookData = [];
@@ -41,7 +59,7 @@ async function FilterGeoJson(GeoData) {
   };
   for (let index = 0; index < Features.length; index++) {
     const Feature = Features[index];
-    Feature.properties["fill-opacity"] = 0.7;
+    Feature.properties["fill-opacity"] = 0.5;
     const Props = Feature.properties;
     if (Props.LABEL == "TSTM") {
       filtered.Categorical.push(Feature);
@@ -204,7 +222,10 @@ async function Main() {
  }
  OutlookText.innerText = `Day ${Day} ${OutlookMode} Outlook`
  DateText.innerText = Days[Day-1].toDateString()
- ShowConvectiveOutlook();   
+ await ShowConvectiveOutlook();   
+  if (Zone){
+    await GetZone()
+  }
 }
 
 Main()
