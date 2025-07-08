@@ -1,48 +1,68 @@
-const map = L.map('map').setView([39.6283,-97.5795], 5); // San Francisco
-const OutlookText = document.getElementById("OutlookText")
-const DateText = document.getElementById("DateText")
-const Day1 = new Date()
-const Day2 = new Date()
-Day2.setDate(Day1.getDate() + 1)
-const Day3 = new Date()
-Day3.setDate(Day1.getDate() + 2)
+const map = L.map("map").setView([39.6283, -97.5795], 5); // San Francisco
+const OutlookText = document.getElementById("OutlookText");
+const DateText = document.getElementById("DateText");
+const Day1 = new Date();
+const Day2 = new Date();
+Day2.setDate(Day1.getDate() + 1);
+const Day3 = new Date();
+Day3.setDate(Day1.getDate() + 2);
 
-const Days = [Day1, Day2, Day3]
+const Days = [Day1, Day2, Day3];
 
-L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-  attribution: '&copy; OpenStreetMap &copy; CartoDB',
-  subdomains: 'abcd',
-  maxZoom: 19
+const centralUSPolygon = [
+  [47.8, -125.7],
+  [42, -125],
+  [35.1, -121.8],
+  [32.4, -117.6],
+  [31.3, -110.9],
+  [31, -105.9],
+  [25, -97],
+  [29, -84.8],
+  [24.7, -80.7],
+  [27.8, -79.7],
+  [31.2, -80.5],
+  [46.3, -65],
+  [47.4, -69.4],
+  [48.7, -127],
+];
+
+L.polygon(centralUSPolygon, { color: "blue" });
+map.fitBounds(centralUSPolygon); // Zooms to the polygon
+
+L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
+  attribution: "&copy; OpenStreetMap &copy; CartoDB",
+  subdomains: "abcd",
+  maxZoom: 19,
 }).addTo(map);
 
-map.zoomControl.remove()
+map.zoomControl.remove();
 const params = new URLSearchParams(window.location.search);
-const Day = params.get("day")
-const OutlookMode = params.get("outlook")
-const Zone = params.get("zone")
+const Day = params.get("day");
+const OutlookMode = params.get("outlook");
+const Zone = params.get("zone");
 
 async function GetZone() {
-  const response = await fetch(`https://api.weather.gov/zones/county/${Zone}`)
-  if(response.ok){
-    const data = await response.json()
-    const RawPolygon = data["geometry"]["coordinates"] 
+  const response = await fetch(`https://api.weather.gov/zones/county/${Zone}`);
+  if (response.ok) {
+    const data = await response.json();
+    const RawPolygon = data["geometry"]["coordinates"];
     let CleanedPolygon = [];
-    for(let index = 0; index<RawPolygon[0].length; index++){
-      CleanedPolygon.push([RawPolygon[0][index][1], RawPolygon[0][index][0]])
+    for (let index = 0; index < RawPolygon[0].length; index++) {
+      CleanedPolygon.push([RawPolygon[0][index][1], RawPolygon[0][index][0]]);
     }
     const Polygon = L.polygon(CleanedPolygon, {
-      color: 'black',      // border color
-      fillColor: 'none', // fill color
-      fillOpacity: 0     // fill transparency
-    }).addTo(map)
-    map.fitBounds(Polygon.getBounds())
+      color: "black", // border color
+      fillColor: "none", // fill color
+      fillOpacity: 0, // fill transparency
+    }).addTo(map);
+    map.fitBounds(Polygon.getBounds());
   }
 }
 
 let currentOutlookDisplay = null;
 let OutlookData = [];
 let OutlookLayer = L.layerGroup();
-OutlookLayer.addTo(map)
+OutlookLayer.addTo(map);
 const textIcon = L.divIcon({
   className: "text-label",
   html: "",
@@ -217,15 +237,15 @@ async function ShowConvectiveOutlook() {
 }
 
 async function Main() {
- for (let index = 0; index < 3; index++) {
+  for (let index = 0; index < 3; index++) {
     OutlookData[index] = await GetOutlook(index + 1);
- }
- OutlookText.innerText = `Day ${Day} ${OutlookMode} Outlook`
- DateText.innerText = Days[Day-1].toDateString()
- await ShowConvectiveOutlook();   
-  if (Zone){
-    await GetZone()
+  }
+  OutlookText.innerText = `Day ${Day} ${OutlookMode} Outlook`;
+  DateText.innerText = Days[Day - 1].toDateString();
+  await ShowConvectiveOutlook();
+  if (Zone) {
+    await GetZone();
   }
 }
 
-Main()
+Main();
