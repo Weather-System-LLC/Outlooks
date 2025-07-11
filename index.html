@@ -1,24 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script defer src="leaflet/leaflet.js"></script>
     <script defer src="leaflet/togeojson.js"></script>
     <script defer src="Scripts/convective.js"></script>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="leaflet/leaflet.css">
-</head>
-<body>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="leaflet/leaflet.css" />
+    <link rel="shortcut icon" href="Images/Icon.png" type="image/x-icon" />
+    <title>SPC Convective Outlook</title>
+  </head>
+  <body>
     <div id="map" class="map"></div>
     <div class="bottombar">
-        <img src="Images/Icon.png" width="100" alt="">
-        <img style="margin-left: .5rem; margin-right: 1rem;" src="Images/noaa_digital_logo.svg" width="95" alt="">
-        <div class="TextHolder">
-            <p id="OutlookText"></p>
-            <p id="DateText"></p>
-            <p>Credits to NOAA/NWS</p>
-        </div>
+      <img src="Images/Icon.png" width="100" alt="" />
+      <img
+        style="margin-left: 0.5rem; margin-right: 1rem"
+        src="Images/noaa_digital_logo.svg"
+        width="95"
+        alt=""
+      />
+      <div class="TextHolder">
+        <p id="OutlookText"></p>
+        <p id="DateText"></p>
+        <p>Credits to NOAA/NWS</p>
+      </div>
     </div>
-</body>
+  </body>
 </html>

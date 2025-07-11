@@ -37,8 +37,8 @@ L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
 
 map.zoomControl.remove();
 const params = new URLSearchParams(window.location.search);
-const Day = params.get("day");
-const OutlookMode = params.get("outlook");
+let Day = params.get("day");
+let OutlookMode = params.get("outlook");
 const Zone = params.get("zone");
 
 async function GetZone() {
@@ -236,16 +236,47 @@ async function ShowConvectiveOutlook() {
   }
 }
 
+async function ConvectiveChange() {
+  OutlookText.innerText = `Day ${Day} ${OutlookMode} Outlook`;
+  DateText.innerText = Days[Day - 1].toDateString();
+  await ShowConvectiveOutlook();
+}
+
 async function Main() {
   for (let index = 0; index < 3; index++) {
     OutlookData[index] = await GetOutlook(index + 1);
   }
-  OutlookText.innerText = `Day ${Day} ${OutlookMode} Outlook`;
-  DateText.innerText = Days[Day - 1].toDateString();
-  await ShowConvectiveOutlook();
+  ConvectiveChange();
   if (Zone) {
     await GetZone();
   }
 }
 
 Main();
+
+document.addEventListener("keypress", async (key) => {
+  switch (key.key) {
+    case "1":
+      Day = 1;
+      break;
+    case "2":
+      Day = 2;
+      break;
+    case "3":
+      Day = 3;
+      break;
+    case "7":
+      OutlookMode = "Categorical";
+      break;
+    case "8":
+      OutlookMode = "Tornado";
+      break;
+    case "9":
+      OutlookMode = "Wind";
+      break;
+    case "0":
+      OutlookMode = "Hail";
+      break;
+  }
+  await ConvectiveChange();
+});
