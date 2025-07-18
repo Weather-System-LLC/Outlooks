@@ -1,6 +1,7 @@
 const map = L.map("map").setView([39.6283, -97.5795], 5); // San Francisco
 const OutlookText = document.getElementById("OutlookText");
 const DateText = document.getElementById("DateText");
+const CreditsBlock = document.getElementById("bottombar");
 const Day1 = new Date();
 const Day2 = new Date();
 Day2.setDate(Day1.getDate() + 1);
@@ -40,6 +41,10 @@ const params = new URLSearchParams(window.location.search);
 let Day = params.get("day");
 let OutlookMode = params.get("outlook");
 const Zone = params.get("zone");
+const HideStatus = params.get("hide");
+if (HideStatus == "true") {
+  CreditsBlock.style.display == "none";
+}
 
 async function GetZone() {
   const response = await fetch(`https://api.weather.gov/zones/county/${Zone}`);
