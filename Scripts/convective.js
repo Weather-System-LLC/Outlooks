@@ -43,7 +43,7 @@ let OutlookMode = params.get("outlook");
 const Zone = params.get("zone");
 const HideStatus = params.get("hide");
 if (HideStatus == "true") {
-  CreditsBlock.style.display == "none";
+  CreditsBlock.style.display = "none";
 }
 
 async function GetZone() {
